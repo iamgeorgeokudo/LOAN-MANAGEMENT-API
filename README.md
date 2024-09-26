@@ -21,11 +21,7 @@ This Flask application provides a RESTful API for managing loans. It allows crea
 
 ## Installation
 
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd <repository-directory>
-   ```
+1. Clone the repository
 
 2. Install the required packages:
    ```
