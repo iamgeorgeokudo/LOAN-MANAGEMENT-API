@@ -15,7 +15,7 @@ def create_user():
         user_schema = UserSchema()
         user, error = user_schema.load(data)
         result = user_schema.dump(user.create()).data
-        return response_with(resp.SUCCESS_201, value={"author":
+        return response_with(resp.SUCCESS_201, value={"user":
     result})
      
      except Exception as e:
@@ -23,4 +23,16 @@ def create_user():
          pass
          
          return response_with(resp.INVALID_INPUT_422)
-     
+
+@user_routes.route('/<int:id>', methods=['PUT'])
+def update_user_detail(id):
+    data = request.get_json()
+    get_user = user.query.get_or_404(id)
+    get_user.first_name = data['first_name']
+    get_user.last_name = data['last_name']
+    db.session.add(get_user)
+    db.session.commit()
+    user_schema = UserSchema()
+    user, error = user_schema.dump(get_user)
+    return response_with(resp.SUCCESS_200, value={"user":
+    user})
