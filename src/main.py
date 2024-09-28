@@ -4,6 +4,7 @@ import logging
 import sys
 import api.utils.responses as resp
 from flask import Flask,jsonify
+from flask_jwt_extended import JWTManager
 from api.utils.database import db, ma
 from api.utils.responses import response_with
 from api.config.config import ProductionConfig, TestingConfig, DevelopmentConfig 
@@ -26,6 +27,8 @@ app.config.from_object(app_config)
 
 db.init_app(app)
 ma.init_app(app)
+jwt = JWTManager(app)
+
 with app.app_context():
     db.create_all()
 

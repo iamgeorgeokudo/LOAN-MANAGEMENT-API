@@ -28,6 +28,18 @@ class User(db.Model):
         db.session.commit()
         return self
     
+    @classmethod
+    def find_by_email(cls, email):
+        return cls.query.filter_by(email  = email).first()
+    
+    @staticmethod
+    def generate_hash(password):
+        return sha256.hash(password)
+    
+    @staticmethod
+    def verify_hash(password, hash):
+        return sha256.verify(password, hash)
+    
 class UserSchema(SQLAlchemyAutoSchema):
     class Meta():
             model = User
@@ -46,17 +58,6 @@ class UserSchema(SQLAlchemyAutoSchema):
 
     
     
-    # @classmethod
-    # def find_by_email(cls, email):
-    #     return cls.query.filter_by(email  = email).first()
-    
-    # @staticmethod
-    # def generate_hash(password):
-    #     return sha256.hash(password)
-    
-    # @staticmethod
-    # def verify_hash(password, hash):
-    #     return sha256.verify(password, hash)
     
 class UserSchema(SQLAlchemyAutoSchema):
     class Meta(SQLAlchemyAutoSchema):
