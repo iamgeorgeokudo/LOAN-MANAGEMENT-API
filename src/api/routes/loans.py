@@ -68,3 +68,13 @@ def delete_loan(id):
     db.session.delete(get_loan)
     db.session.commit()
     return response_with(resp.SUCCESS_204)
+
+# calculate repayment amount based on interest rate and term
+@loan_routes.route('/calculate-repayment', methods=['POST'])
+def calculate_repayment():
+    data = request.get_json()
+    loan_amount = data['loan_amount']
+    loan_interest_rate = data['loan_interest_rate']
+    loan_term = data['loan_term']
+    repayment = loan_amount + (loan_amount * loan_interest_rate * loan_term)
+    return response_with(resp.SUCCESS_200, value={"repayment": repayment})

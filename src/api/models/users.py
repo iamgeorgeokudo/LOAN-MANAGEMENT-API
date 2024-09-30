@@ -12,6 +12,7 @@ class User(db.Model):
     last_name = db.Column(db.String(20))
     email = db.Column(db.String(30), unique=True)
     password_hash = db.Column(db.String(128), nullable=False)
+    isVerified = db.Column(db.Boolean, default=False, nullable=False)
     loans = db.relationship('Loan', backref='User',
     cascade="all, delete-orphan")
     
@@ -30,7 +31,7 @@ class User(db.Model):
     
     @classmethod
     def find_by_email(cls, email):
-        return cls.query.filter_by(email  = email).first()
+        return cls.query.filter_by(email = email).first()
     
     @staticmethod
     def generate_hash(password):
@@ -56,8 +57,6 @@ class UserSchema(SQLAlchemyAutoSchema):
     'loan_status'                                          
     ])
 
-    
-    
     
 class UserSchema(SQLAlchemyAutoSchema):
     class Meta(SQLAlchemyAutoSchema):

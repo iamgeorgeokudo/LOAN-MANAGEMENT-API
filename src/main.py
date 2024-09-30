@@ -4,9 +4,12 @@ import logging
 import sys
 import api.utils.responses as resp
 from flask import Flask,jsonify
+from flask_swagger import swagger
+from flask_swagger_ui import get_swaggerui_blueprint
 from flask_jwt_extended import JWTManager
 from api.utils.database import db, ma
 from api.utils.responses import response_with
+from api.utils.email import mail
 from api.config.config import ProductionConfig, TestingConfig, DevelopmentConfig 
 from api.routes.users import user_routes
 from api.routes.loans import loan_routes
@@ -28,6 +31,7 @@ app.config.from_object(app_config)
 db.init_app(app)
 ma.init_app(app)
 jwt = JWTManager(app)
+mail.init_app(app)
 
 with app.app_context():
     db.create_all()
@@ -61,6 +65,20 @@ def not_found(e):
         db.create_all()
     
     return app
+
+
+# Serves API specs
+@app.route("/api/spec")
+def spec():
+    swag = swagger(app, prefix='/api')
+    swag['info']['base'] = "http://localhost:5000"
+    swag['info']['version'] = "1.0"
+    swag['info']['title'] = "PEZIKA Loan Management API"
+    return jsonify(swag)
+
+# Initiate swagger ui
+swaggerui_blueprint = get_swaggerui_blueprint('/api/docs', '/api/spec', config={'app_name': "PEZIKA Loan Management API"})
+app.register_blueprint(swaggerui_blueprint, url_prefix='/api/docs')
 
 
 if __name__ == "__main__":
