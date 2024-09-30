@@ -6,6 +6,21 @@ from api.utils.database import db
 
 loan_routes = Blueprint("loan_routes", __name__)
 
+# create loan
+@loan_routes.route('/', methods=['POST'])
+def create_loan():
+    try:
+        data = request.get_json()
+        loan_schema = LoanSchema()
+        loan, error = loan_schema.load(data)
+        result = loan_schema.dump(loan.create()).data
+        return response_with(resp.SUCCESS_201, value={"loan": result})
+    except Exception as e:
+         pass
+         #print e
+
+         return response_with(resp.INVALID_INPUT_422)
+
 # view all loans
 @loan_routes.route('/', methods=['GET'])
 def get_loan_list():
@@ -16,7 +31,7 @@ def get_loan_list():
 
     return response_with(resp.SUCCESS_200, value={"loans": loans})
 
-# get loan detail
+# get loan detail by ID
 @loan_routes.route('/<int:id>', methods=['GET'])
 def get_loan_detail(id):
     fetched = Loan.query.get_or_404(id)

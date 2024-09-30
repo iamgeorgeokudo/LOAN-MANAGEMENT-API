@@ -7,19 +7,18 @@ from api.models.loans import LoanSchema
 class User(db.Model):
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer, primary_key=True,)
-    first_name = db.Column(db.String(20))
-    last_name = db.Column(db.String(20))
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    fullname = db.Column(db.String(20))
     email = db.Column(db.String(30), unique=True)
     password_hash = db.Column(db.String(128), nullable=False)
-    isVerified = db.Column(db.Boolean, default=False, nullable=False)
+    
+
     loans = db.relationship('Loan', backref='User',
     cascade="all, delete-orphan")
     
 
-    def __init__(self, first_name, last_name, email, password_hash, loans=[]):
-        self.first_name = first_name
-        self.last_name = last_name
+    def __init__(self, fullname, email, password_hash, loans=[]):
+        self.fullname = fullname
         self.email = email
         self.password_hash = password_hash
         self.loans = loans
@@ -47,9 +46,8 @@ class UserSchema(SQLAlchemyAutoSchema):
             sqla_session = db.session
 
     id = fields.Number(dump_only=True)
-    first_name = fields.String(required=True)
-    last_name = fields.String(required=True)
-    email = fields.String(required=True)
+    full_name = fields.String(required=True)
+    email = fields.String(required=True, unique = True)
     password_hash = fields.String(required=True)
     loans = fields.Nested(LoanSchema, many=True, only=['loan_amount',
     'loan_interest_rate',
@@ -58,13 +56,12 @@ class UserSchema(SQLAlchemyAutoSchema):
     ])
 
     
-class UserSchema(SQLAlchemyAutoSchema):
-    class Meta(SQLAlchemyAutoSchema):
-        model =User
-        sql_session = db.session
+# class UserSchema(SQLAlchemyAutoSchema):
+#     class Meta(SQLAlchemyAutoSchema):
+#         model =User
+#         sql_session = db.session
     
-    id = fields.Number(dump_only=True)
-    first_name = fields.String(required=True)
-    last_name = fields.String(required=True)
-    email = fields.String(required=True)
-    password_hash = fields.String(required=True)
+#     id = fields.Number(dump_only=True)
+#     fullname = fields.String(required=True)
+#     email = fields.String(required=True)
+#     password_hash = fields.String(required=True)

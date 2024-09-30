@@ -8,10 +8,14 @@ class Config(object):
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI =  'sqlite:///' + os.path.join(basedir, 'prod_db.sqlite')
+    SECRET_KEY = 'secret'
+    SECURITY_PASSWORD_SALT= 'PASSWORD-SALT'
 
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'dev_db.sqlite')
+    SECRET_KEY = 'secret'
+    SECURITY_PASSWORD_SALT= 'PASSWORD-SALT'
 
 class TestingConfig(Config):
     TESTING = True

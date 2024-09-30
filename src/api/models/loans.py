@@ -1,18 +1,22 @@
 from api.utils.database import db
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow import fields
+from datetime import datetime
 
 class Loan(db.Model):
     __tablename__ = 'loans'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     loan_amount = db.Column(db.Float, nullable=False)
     interest_rate = db.Column(db.Float, nullable=False)
     loan_term = db.Column(db.Integer, nullable=False) # in months
     loan_status = db.Column(db.String(64), nullable=False, default='Pending')
+    #due_date = db.Column(db.DateTime)
+
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-    def __init__(self, loan_amount, interest_rate, loan_term, loan_status, user_id=None):
+
+    def __init__(self, loan_amount, interest_rate, loan_term, loan_status,user_id=None):
         self.loan_amount = loan_amount
         self.interest_rate = interest_rate
         self.loan_term = loan_term
