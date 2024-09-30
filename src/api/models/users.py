@@ -7,12 +7,11 @@ from api.models.loans import LoanSchema
 class User(db.Model):
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     fullname = db.Column(db.String(20))
     email = db.Column(db.String(30), unique=True)
     password_hash = db.Column(db.String(128), nullable=False)
     
-
     loans = db.relationship('Loan', backref='User',
     cascade="all, delete-orphan")
     

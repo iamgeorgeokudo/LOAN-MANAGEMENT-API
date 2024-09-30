@@ -18,7 +18,7 @@ user_routes = Blueprint("user_routes", __name__)
 def create_user():
      try:
         data = request.get_json()
-        data['password_hash'] = User.generate_hash(data['password'])
+        # data['password_hash'] = User.generate_hash(data['password'])
         user_schema = UserSchema()
         user, error = user_schema.load(data)
         result = user_schema.dump(user.create()).data

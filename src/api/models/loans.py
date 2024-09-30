@@ -11,16 +11,17 @@ class Loan(db.Model):
     interest_rate = db.Column(db.Float, nullable=False)
     loan_term = db.Column(db.Integer, nullable=False) # in months
     loan_status = db.Column(db.String(64), nullable=False, default='Pending')
-    #due_date = db.Column(db.DateTime)
+    due_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 
-    def __init__(self, loan_amount, interest_rate, loan_term, loan_status,user_id=None):
+    def __init__(self, loan_amount, interest_rate, loan_term, due_date, loan_status,user_id=None):
         self.loan_amount = loan_amount
         self.interest_rate = interest_rate
         self.loan_term = loan_term
         self.loan_status = loan_status
+        self.due_date = due_date
         self.user_id = user_id
 
     def create(self):
@@ -38,5 +39,6 @@ class LoanSchema(SQLAlchemyAutoSchema):
     loan_interest_rate = fields.Float(required=True)
     loan_term = fields.Integer(required=True)
     loan_status = fields.String(required=True)
+    due_date = fields.DateTime(required=True)
     user_id = fields.Integer()
     

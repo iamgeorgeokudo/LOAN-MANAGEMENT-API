@@ -26,7 +26,7 @@ def create_loan():
 def get_loan_list():
     fetched = Loan.query.all()
     loan_schema = LoanSchema(many=True, only=['user_id',
-    'loan_amount', 'loan_interest_rate', 'loan_term', 'loan_status', ])
+    'loan_amount', 'loan_interest_rate', 'loan_term', 'loan_status', 'due_date' ])
     loans, error = loan_schema.dump(fetched)
 
     return response_with(resp.SUCCESS_200, value={"loans": loans})
@@ -50,6 +50,7 @@ def update_loan_detail():
     get_loan.loan_interest_rate = data['loan_interest_rate']
     get_loan.loan_term = data['loan_term']
     get_loan.loan_status = data['loan_status']
+    get_loan.due_date = data['due_date']
     db.session.add(get_loan)
     db.session.commit()
     loan_schema = LoanSchema()
@@ -69,6 +70,8 @@ def modify_loan_detail(id):
             get_loan.loan_term = data['loan_term']
     if data.get('loan_status'):
             get_loan.loan_status = data['loan_status']
+    if data.get('due_date'):
+            get_loan.due_date = data['due_date']
     db.session.add(get_loan)
     db.session.commit()
     loan_schema = LoanSchema()
@@ -93,3 +96,14 @@ def calculate_repayment():
     loan_term = data['loan_term']
     repayment = loan_amount + (loan_amount * loan_interest_rate * loan_term)
     return response_with(resp.SUCCESS_200, value={"repayment": repayment})
+
+#monthly repayment amount using simple interest formula
+@loan_routes.route('/calculate-monthly-repayment', methods=['POST'])
+def calculate_monthly_repayment():
+    data = request.get_json()
+    loan_amount = data['loan_amount']
+    loan_interest_rate = data['loan_interest_rate']
+    loan_term = data['loan_term']
+    total_repayment = loan_amount + (loan_amount * loan_interest_rate * loan_term)
+    monthly_repayment = total_repayment / (loan_term * 12)
+    return response_with(resp.SUCCESS_200, value={"monthly_repayment": monthly_repayment})
